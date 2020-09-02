@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>jQuery Scroll Table</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+<style>
+	#scrollBox {margin: 50px auto 0;max-width: 800px;max-height: 500px;}
+	.scroll-box {overflow: hidden;}
+	.scroll-box table {white-space: nowrap;}
+	.scroll-box-title {overflow: hidden;background-color: #ddd;}
+	.scroll-box-list thead {display:none;}
+	.scroll-box-list {overflow: auto;}
+</style>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div id="scrollBox" class="scroll-box table-striped">
+	<table class="table table-bordered mb-0">
+		<thead class="thead-dark">
+			<tr>
+				<th>A</th>
+				<th>B</th>
+				
+				<th>C</th>
+				<!--
+				<th>D</th>-->
+			</tr>
+		</thead>
+		<tbody id="list">
+			<tr>
+				<td>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</td>
+				
+				<td>bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb</td>
+				
+				<td>ccccccccccccccccccccccccccccccccccc</td>
+				<!--
+				<td>dddddddddddddddddddddddddddddddddd</td>
+				-->
+			</tr>
+			
+		</tbody>
+	</table>
+</div>
+</body>
+
+<script>
+	/*
+	 * create scroll table	
+	 * @param id {String} : id name
+	 * @return {boolean}
+	 * @author jskim
+	 * @since 1.0
+	 */
+	function createScrollTable(id){
+		/*
+			Brwoser compatibility
+			chrome >= 1
+			edge >= 18
+			ie >= 9
+			safari >=6
+		*/
+		// String 값만 허락
+		if(typeof id != 'string'){
+			return false;
+		}
+		var scrollBox = document.getElementById(id);
+		
+		scroll-box-list = scrollBox.getElementsByClassName('scroll-box-list');
+		// scrollBox가 없으면 로직 수행 안함.
+		if(scrollBox == null && scrollBox == undefined){
+			return false;
+		}
+
+		var scrollBoxHeight = scrollBox.clientHeight
+		var listTable = scrollBox.getElementsByTagName('table')[0]; // 테이블을 선택한다.
+		// listTable이 없으면 로직 수행 안함.
+		if(listTable == null && listTable == undefined){
+			return false;
+		}
+		
+		// create table wrap element
+		var scrollBoxList = document.createElement('div'); 
+		var scrollBoxTitle = document.createElement('div');
+		// set scroll-box-title class 
+		scrollBoxTitle.setAttribute('class', 'scroll-box-title');
+		// set scroll-box-list class 
+		scrollBoxList.setAttribute('class', 'scroll-box-list');
+		// 테이블 복사
+		var titleTable = listTable.cloneNode(true); 
+		// scrollBoxTitle 높이 설정.
+		var titleHeight = listTable.getElementsByTagName('thead')[0].clientHeight;
+		scrollBoxTitle.style.height = titleHeight+'px';
+		// scrollBoxList 높이 설정
+		scrollBoxList.style.height = scrollBoxHeight - titleHeight + 'px';			
+		//  scrollBoxTitle에 titleTable 추가
+		scrollBoxTitle.appendChild(titleTable);
+		//  scrollBoxList에 listTable 추가
+		scrollBoxList.appendChild(listTable);
+		// scrollBox에 추가 
+		scrollBox.appendChild(scrollBoxTitle);
+		scrollBox.appendChild(scrollBoxList);
+		console.log(scrollBoxList.scrollHeight);
+		console.log(scrollBoxList.clientHeight);
+		if(scrollBoxList.scrollHeight > scrollBoxList.clientHeight){
+			scrollBoxList.style.height = scrollBoxList.scrollHeight + (scrollBoxList.scrollHeight - scrollBoxList.clientHeight) + 'px';
+		}
+
+		// scroll event 추가
+		scrollBoxList.addEventListener('scroll', function(e){
+			titleTable.style.marginLeft = -this.scrollLeft +'px';
+		});
+		return true;
+	}
+</script>
+
+</html>
